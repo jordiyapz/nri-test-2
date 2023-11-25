@@ -51,7 +51,7 @@ const styles = {
     flexDirection: "row",
     columnGap: 16,
     alignItems: "center",
-    padding: "0 16px"
+    padding: "0 32px"
 
   }),
   // TODO: fix this right position

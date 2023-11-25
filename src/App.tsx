@@ -4,6 +4,7 @@ import Container from "./shared/ui/Container";
 import { Carousel } from "./shared/ui/carousel";
 import { PhotoDoc } from "./shared/types";
 import { useEffect, useMemo, useState } from "react";
+import Masonry from "react-masonry-css";
 
 // Array of 10 items (1 to 10)
 const albumIdList = Array(10)
@@ -16,7 +17,7 @@ function handleError(error: unknown): void {
 
 function App() {
   const [data, setData] = useState<PhotoDoc[]>([]);
-  const [activeAlbum, setActiveAlbum] = useState(3);
+  const [activeAlbum, setActiveAlbum] = useState(1);
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/photos")
@@ -39,12 +40,13 @@ function App() {
 
           const choosenId = 0;
           // const choosenId = Math.floor(Math.random() * pictures.length);
-          
+
           return pictures[choosenId];
         })
         .filter((item) => item !== null) as PhotoDoc[],
     [data]
   );
+  const pictureList = data.filter((p) => p.albumId === activeAlbum);
 
   /** Handlers */
   const handleOnActiveAlbumChange = (index: number) => {
@@ -61,12 +63,30 @@ function App() {
           onActiveItemChange={handleOnActiveAlbumChange}
         />
       </div>
+      <div css={styles.masonryContainer}>
+        <Masonry
+          breakpointCols={2}
+          className="masonry-grid"
+          columnClassName="masonry-column"
+        >
+          {pictureList.map((picture) => (
+            <img
+              key={picture.id}
+              css={styles.picture}
+              src={picture.url}
+              alt={picture.title}
+            />
+          ))}
+        </Masonry>
+      </div>
     </Container>
   );
 }
 
 export default App;
 
+const masonryContainerPaddingX = 16;
+const masonryGutter = 10;
 const styles = {
   root: css({ backgroundColor: "#F0F0F0", minHeight: "100vh" }),
   headerContainer: css({
@@ -74,5 +94,23 @@ const styles = {
     backgroundColor: "#FFFFFF",
     height: 180,
     marginBottom: 60,
+  }),
+  masonryContainer: css({
+    width: "100%",
+    paddingLeft: masonryContainerPaddingX,
+    paddingRigth: masonryContainerPaddingX,
+    "& .masonry-grid": {
+      display: "flex",
+      marginLeft: -masonryGutter,
+      marginRight: masonryContainerPaddingX * 2,
+      width: "auto",
+    },
+    ".masonry-column": {
+      paddingLeft: masonryGutter,
+      backgroundClip: "padding-box",
+    },
+  }),
+  picture: css({
+    width: "100%",
   }),
 };
