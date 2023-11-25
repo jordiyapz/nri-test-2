@@ -22,6 +22,7 @@ export const usePhotos = (options: Partial<UsePhotoOptions> = {}) => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     const ac = new AbortController();
     fetch("https://jsonplaceholder.typicode.com/photos", {
       signal: ac.signal,
