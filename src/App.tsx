@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { css } from "@emotion/react";
 import Masonry from "react-masonry-css";
+import Skeleton from "react-loading-skeleton";
 
 import Container from "./shared/ui/Container";
 import { Carousel } from "./shared/ui/carousel";
@@ -62,6 +63,7 @@ function App() {
         <Header hide={isScrollingDown} />
         <Carousel
           items={carouselItems}
+          isLoading={isLoading}
           activeItem={activeAlbum}
           onActiveItemChange={handleOnActiveAlbumChange}
         />
@@ -72,24 +74,33 @@ function App() {
           isScrollingDown && styles.masonryContainerFull,
         ]}
       >
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : (
-          <Masonry
-            breakpointCols={2}
-            className="masonry-grid"
-            columnClassName="masonry-column"
-          >
-            {pictureList.map((picture) => (
+        <Masonry
+          breakpointCols={2}
+          className="masonry-grid"
+          columnClassName="masonry-column"
+        >
+          {isLoading ? (
+            <>
+              <Skeleton width={159} height={159} />
+              <Skeleton width={159} height={159} />
+              <Skeleton width={159} height={159} />
+              <Skeleton width={159} height={159} />
+              <Skeleton width={159} height={159} />
+              <Skeleton width={159} height={159} />
+              <Skeleton width={159} height={159} />
+              <Skeleton width={159} height={159} />
+            </>
+          ) : (
+            pictureList.map((picture) => (
               <img
                 key={picture.id}
                 css={styles.picture}
                 src={picture.url}
                 alt={picture.title}
               />
-            ))}
-          </Masonry>
-        )}
+            ))
+          )}
+        </Masonry>
       </div>
       {createPortal(<AddFAB />, document.body)}
     </Container>

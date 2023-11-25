@@ -3,20 +3,23 @@ import Card from "./Card";
 import { PhotoDoc } from "@/entities/photos";
 import { palette } from "@/theme";
 import { useEffect, useRef } from "react";
+import Skeleton from "react-loading-skeleton";
 
 type Props = {
   items: PhotoDoc[];
+  isLoading?: boolean;
   activeItem?: number;
   onActiveItemChange?(index: number): void;
 };
 
 const Carousel = ({
   items,
+  isLoading,
   activeItem = 0,
   onActiveItemChange = () => {},
 }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ left: (140 + 16) * (activeItem - 1) });
   }, [activeItem]);
@@ -27,16 +30,23 @@ const Carousel = ({
   return (
     <div css={styles.root}>
       <div css={styles.container} ref={scrollRef}>
-        {items.map((item, i) => (
-          <Card
-            tabIndex={0}
-            key={item.id}
-            src={item.thumbnailUrl}
-            title={item.title}
-            active={item.albumId === activeItem}
-            onFocus={() => onActiveItemChange(i)}
-          />
-        ))}
+        {isLoading ? (
+          <>
+            <Skeleton height={140} width={180} />
+            <Skeleton height={100} width={140} />
+          </>
+        ) : (
+          items.map((item, i) => (
+            <Card
+              tabIndex={0}
+              key={item.id}
+              src={item.thumbnailUrl}
+              title={item.title}
+              active={item.albumId === activeItem}
+              onFocus={() => onActiveItemChange(i)}
+            />
+          ))
+        )}
       </div>
       <div css={styles.pagination}>
         {activeItem} of {items.length}
