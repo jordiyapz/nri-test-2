@@ -66,7 +66,12 @@ function App() {
           onActiveItemChange={handleOnActiveAlbumChange}
         />
       </div>
-      <div css={styles.masonryContainer}>
+      <div
+        css={[
+          styles.masonryContainer,
+          isScrollingDown && styles.masonryContainerFull,
+        ]}
+      >
         {isLoading ? (
           <div>Loading...</div>
         ) : (
@@ -102,6 +107,7 @@ const styles = {
     paddingTop: 280,
   }),
   headerContainer: css({
+    zIndex: 1,
     paddingTop: 32,
     backgroundColor: "#FFFFFF",
     height: 180,
@@ -115,6 +121,19 @@ const styles = {
     width: "100%",
     paddingLeft: masonryContainerPaddingX,
     paddingRight: masonryContainerPaddingX,
+    position: "relative",
+    "&:after": {
+      position: "fixed",
+      bottom: 0,
+      height: "100%",
+      width: 360 - 16,
+      content: '""',
+      background: `linear-gradient(to top,
+        rgba(255,255,255, 1) 0%, 
+        rgba(255,255,255, 0) 10%
+      )`,
+      pointerEvents: "none" /* so the text is still selectable */,
+    },
     "& .masonry-grid": {
       display: "flex",
       marginLeft: -masonryGutter,
@@ -124,6 +143,12 @@ const styles = {
     ".masonry-column": {
       paddingLeft: masonryGutter,
       backgroundClip: "padding-box",
+    },
+  }),
+  masonryContainerFull: css({
+    "&:after": {
+      position: "relative",
+      background: "none",
     },
   }),
   picture: css({
