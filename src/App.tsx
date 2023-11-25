@@ -114,7 +114,7 @@ const styles = {
   masonryContainer: css({
     width: "100%",
     paddingLeft: masonryContainerPaddingX,
-    paddingRigth: masonryContainerPaddingX,
+    paddingRight: masonryContainerPaddingX,
     "& .masonry-grid": {
       display: "flex",
       marginLeft: -masonryGutter,
