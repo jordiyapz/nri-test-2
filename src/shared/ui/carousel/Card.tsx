@@ -1,16 +1,17 @@
 import { palette } from "@/theme";
 import { css } from "@emotion/react";
+import { HTMLAttributes } from "react";
 
-type Props = {
+type Props = HTMLAttributes<HTMLDivElement> & {
   title: string;
   src: string;
   alt?: string;
   active?: boolean;
 };
 
-const Card = ({ title, src, alt, active }: Props) => {
+const Card = ({ title, src, alt, active, ...props }: Props) => {
   return (
-    <div css={[styles.card, active && styles.cardActive]}>
+    <div css={[styles.card, active && styles.cardActive]} {...props}>
       <img
         css={[styles.image, active && styles.imageActive]}
         src={src}

@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import Card from "./Card";
 import { PhotoDoc } from "@/shared/types";
 import { palette } from "@/theme";
+import { useEffect, useRef } from "react";
 
 type Props = {
   items: PhotoDoc[];
@@ -14,18 +15,26 @@ const Carousel = ({
   activeItem = 0,
   onActiveItemChange = () => {},
 }: Props) => {
-  // TODO: implement onActiveItemChange effect
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ left: (140 + 16) * (activeItem - 1) });
+  }, [activeItem]);
+
   // TODO: add loading indicator
   // TODO: add empty fallback
+
   return (
     <div css={styles.root}>
-      <div css={styles.container}>
-        {items.map((item) => (
+      <div css={styles.container} ref={scrollRef}>
+        {items.map((item, i) => (
           <Card
+            tabIndex={0}
             key={item.id}
             src={item.thumbnailUrl}
             title={item.title}
             active={item.albumId === activeItem}
+            onFocus={() => onActiveItemChange(i)}
           />
         ))}
       </div>
@@ -51,8 +60,8 @@ const styles = {
     flexDirection: "row",
     columnGap: 16,
     alignItems: "center",
-    padding: "0 32px"
-
+    paddingLeft: 32,
+    paddingRight: 360 - 32 - 180,
   }),
   // TODO: fix this right position
   pagination: css({
@@ -60,6 +69,6 @@ const styles = {
     fontSize: 10,
     color: palette.gray,
     bottom: 0,
-    right: 0,
+    left: 180 + 48,
   }),
 };
