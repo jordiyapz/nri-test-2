@@ -5,6 +5,8 @@ import { Carousel } from "./shared/ui/carousel";
 import { PhotoDoc } from "./shared/types";
 import { useEffect, useMemo, useState } from "react";
 import Masonry from "react-masonry-css";
+import { createPortal } from "react-dom";
+import AddFAB from "./shared/ui/AddFAB";
 
 // Array of 10 items (1 to 10)
 const albumIdList = Array(10)
@@ -79,6 +81,7 @@ function App() {
           ))}
         </Masonry>
       </div>
+      {createPortal(<AddFAB />, document.body)}
     </Container>
   );
 }
