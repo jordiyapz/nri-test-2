@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import Card from "./Card";
-import { PhotoDoc } from "@/shared/types";
+import { PhotoDoc } from "@/entities/photos";
 import { palette } from "@/theme";
 import { useEffect, useRef } from "react";
 

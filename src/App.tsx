@@ -5,11 +5,12 @@ import Masonry from "react-masonry-css";
 
 import Container from "./shared/ui/Container";
 import { Carousel } from "./shared/ui/carousel";
-import { PhotoDoc } from "./shared/types";
+import { PhotoDoc } from "./entities/photos";
 import AddFAB from "./shared/ui/AddFAB";
 import { useScrollDirection } from "./shared/lib/hooks";
 
 import { Header } from "./layouts/header";
+import { usePhotos } from "./entities/photos/lib";
 
 // Array of 10 items (1 to 10)
 const albumIdList = Array(10)
@@ -21,21 +22,11 @@ function handleError(error: unknown): void {
 }
 
 function App() {
-  const [data, setData] = useState<PhotoDoc[]>([]);
+  const { data, isLoading } = usePhotos({ onError: handleError });
   const [activeAlbum, setActiveAlbum] = useState(1);
   const scrollDirection = useScrollDirection();
 
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/photos")
-      .then((response) => {
-        response
-          .json()
-          .then((values) => setData(values))
-          .catch(handleError);
-      })
-      .catch(handleError);
-  }, []);
-
+  // Scroll to top on album focus change
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [activeAlbum]);
@@ -47,10 +38,7 @@ function App() {
         .map((id) => {
           const pictures = data.filter((p) => p.albumId === id);
           if (!pictures.length) return null;
-
-          const choosenId = 0;
-
-          return pictures[choosenId];
+          return pictures[0];
         })
         .filter((item) => item !== null) as PhotoDoc[],
     [data]
@@ -79,20 +67,24 @@ function App() {
         />
       </div>
       <div css={styles.masonryContainer}>
-        <Masonry
-          breakpointCols={2}
-          className="masonry-grid"
-          columnClassName="masonry-column"
-        >
-          {pictureList.map((picture) => (
-            <img
-              key={picture.id}
-              css={styles.picture}
-              src={picture.url}
-              alt={picture.title}
-            />
-          ))}
-        </Masonry>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <Masonry
+            breakpointCols={2}
+            className="masonry-grid"
+            columnClassName="masonry-column"
+          >
+            {pictureList.map((picture) => (
+              <img
+                key={picture.id}
+                css={styles.picture}
+                src={picture.url}
+                alt={picture.title}
+              />
+            ))}
+          </Masonry>
+        )}
       </div>
       {createPortal(<AddFAB />, document.body)}
     </Container>
