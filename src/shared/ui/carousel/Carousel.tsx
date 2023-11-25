@@ -5,28 +5,32 @@ import { palette } from "@/theme";
 
 type Props = {
   items: PhotoDoc[];
+  activeItem?: number;
+  onActiveItemChange?(index: number): void;
 };
 
-const Carousel = ({ items }: Props) => {
-  /* TODO: implement pagination */
-  const active = 1;
-
+const Carousel = ({
+  items,
+  activeItem = 0,
+  onActiveItemChange = () => {},
+}: Props) => {
+  // TODO: implement onActiveItemChange effect
   // TODO: add loading indicator
   // TODO: add empty fallback
   return (
     <div css={styles.root}>
       <div css={styles.container}>
-        {items.map((item, i) => (
+        {items.map((item) => (
           <Card
             key={item.id}
             src={item.thumbnailUrl}
             title={item.title}
-            active={i === active}
+            active={item.albumId === activeItem}
           />
         ))}
       </div>
       <div css={styles.pagination}>
-        {active} of {items.length}
+        {activeItem} of {items.length}
       </div>
     </div>
   );
@@ -36,7 +40,7 @@ export default Carousel;
 
 const styles = {
   root: css({
-    position: "relative"
+    position: "relative",
   }),
   container: css({
     overflowX: "scroll",
@@ -47,6 +51,8 @@ const styles = {
     flexDirection: "row",
     columnGap: 16,
     alignItems: "center",
+    padding: "0 16px"
+
   }),
   // TODO: fix this right position
   pagination: css({

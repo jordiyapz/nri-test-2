@@ -3,37 +3,63 @@ import { Header } from "./layouts/header";
 import Container from "./shared/ui/Container";
 import { Carousel } from "./shared/ui/carousel";
 import { PhotoDoc } from "./shared/types";
+import { useEffect, useMemo, useState } from "react";
 
-const items: PhotoDoc[] = [
-  {
-    albumId: 1,
-    id: 1,
-    title: "accusamus beatae ad facilis cum similique qui sunt",
-    url: "https://via.placeholder.com/600/92c952",
-    thumbnailUrl: "https://via.placeholder.com/150/92c952",
-  },
-  {
-    albumId: 1,
-    id: 2,
-    title: "reprehenderit est deserunt velit ipsam",
-    url: "https://via.placeholder.com/600/771796",
-    thumbnailUrl: "https://via.placeholder.com/150/771796",
-  },
-  {
-    albumId: 1,
-    id: 6,
-    title: "accusamus ea aliquid et amet sequi nemo",
-    url: "https://via.placeholder.com/600/56a8c2",
-    thumbnailUrl: "https://via.placeholder.com/150/56a8c2",
-  },
-];
+// Array of 10 items (1 to 10)
+const albumIdList = Array(10)
+  .fill(null)
+  .map((_, i) => i + 1);
+
+function handleError(error: unknown): void {
+  console.error(error);
+}
 
 function App() {
+  const [data, setData] = useState<PhotoDoc[]>([]);
+  const [activeAlbum, setActiveAlbum] = useState(3);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/photos")
+      .then((response) => {
+        response
+          .json()
+          .then((values) => setData(values))
+          .catch(handleError);
+      })
+      .catch(handleError);
+  }, []);
+
+  /** Data processing */
+  const carouselItems = useMemo(
+    () =>
+      albumIdList
+        .map((id) => {
+          const pictures = data.filter((p) => p.albumId === id);
+          if (!pictures.length) return null;
+
+          const choosenId = 0;
+          // const choosenId = Math.floor(Math.random() * pictures.length);
+          
+          return pictures[choosenId];
+        })
+        .filter((item) => item !== null) as PhotoDoc[],
+    [data]
+  );
+
+  /** Handlers */
+  const handleOnActiveAlbumChange = (index: number) => {
+    setActiveAlbum(index + 1);
+  };
+
   return (
     <Container css={styles.root}>
       <div css={styles.headerContainer}>
         <Header />
-        <Carousel items={items} />
+        <Carousel
+          items={carouselItems}
+          activeItem={activeAlbum}
+          onActiveItemChange={handleOnActiveAlbumChange}
+        />
       </div>
     </Container>
   );
