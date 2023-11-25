@@ -63,7 +63,6 @@ const styles = {
     paddingLeft: 32,
     paddingRight: 360 - 32 - 180,
   }),
-  // TODO: fix this right position
   pagination: css({
     position: "absolute",
     fontSize: 10,

@@ -1,13 +1,12 @@
 import { css } from "@emotion/react";
+import { HiBadgeCheck, HiOutlineMenuAlt3 } from "react-icons/hi";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
 
 import { Avatar } from "@/shared/ui/avatar";
-import InfoItem from "./InfoItem";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCertificate } from "@fortawesome/free-solid-svg-icons/faCertificate";
 import { palette } from "@/theme";
-import { faBars } from "@fortawesome/free-solid-svg-icons/faBars";
+
+import InfoItem from "./InfoItem";
 
 type Props = {
   hide?: boolean;
@@ -37,23 +36,17 @@ const Header = ({ hide }: Props) => {
           <div>
             <h1 css={styles.username}>
               {user.name}
-              {/* TODO: Create custom verified badge */}
-              <FontAwesomeIcon
-                icon={faCertificate}
+              <HiBadgeCheck
+                fontSize={20}
                 color={palette.tertiary}
                 css={{ marginLeft: 8 }}
               />
             </h1>
             <p css={styles.title}>{user.title}</p>
           </div>
-          {/* TODO: Create custom hamburger icon */}
-          {/* TODO: Make this icon as menu button */}
-          <FontAwesomeIcon
-            icon={faBars}
-            color={palette.tertiary}
-            fontSize={20}
-            css={{ marginTop: 8 }}
-          />
+          <div css={styles.menuBtn}>
+            <HiOutlineMenuAlt3 color={palette.tertiary} fontSize={28} />
+          </div>
         </div>
         <div css={styles.row2}>
           <InfoItem icon={faLocationDot}>{user.location}</InfoItem>
@@ -85,6 +78,19 @@ const styles = {
     fontSize: 12,
     color: "#969696",
     margin: 0,
+  }),
+  menuBtn: css({
+    width: 40,
+    height: 40,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: "rgba(160, 160, 160, 0)",
+    "&:hover": {
+      backgroundColor: "rgba(160, 160, 160, .2)",
+      transition: "background-color .2s ease-out",
+    },
   }),
 };
 
