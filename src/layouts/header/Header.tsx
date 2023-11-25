@@ -65,8 +65,14 @@ const Header = ({ hide }: Props) => {
 };
 
 const styles = {
-  root: css({ display: "flex", gap: 19 }),
-  content: css({ display: "flex", flexDirection: "column", gap: 8 }),
+  root: css({
+    display: "flex",
+    gap: 19,
+    marginLeft: 20,
+    marginRight: 20,
+    marginBottom: 12,
+  }),
+  content: css({ display: "flex", flexDirection: "column", gap: 8, flex: 1 }),
   row1: css({ display: "flex", justifyContent: "space-between" }),
   row2: css({ display: "flex", columnGap: 18, flexWrap: "wrap" }),
   username: css({
