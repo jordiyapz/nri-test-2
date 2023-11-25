@@ -1,12 +1,15 @@
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { css } from "@emotion/react";
-import { Header } from "./layouts/header";
+import Masonry from "react-masonry-css";
+
 import Container from "./shared/ui/Container";
 import { Carousel } from "./shared/ui/carousel";
 import { PhotoDoc } from "./shared/types";
-import { useEffect, useMemo, useState } from "react";
-import Masonry from "react-masonry-css";
-import { createPortal } from "react-dom";
 import AddFAB from "./shared/ui/AddFAB";
+import { useScrollDirection } from "./shared/lib/hooks";
+
+import { Header } from "./layouts/header";
 
 // Array of 10 items (1 to 10)
 const albumIdList = Array(10)
@@ -20,6 +23,7 @@ function handleError(error: unknown): void {
 function App() {
   const [data, setData] = useState<PhotoDoc[]>([]);
   const [activeAlbum, setActiveAlbum] = useState(1);
+  const scrollDirection = useScrollDirection();
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/photos")
@@ -32,6 +36,10 @@ function App() {
       .catch(handleError);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [activeAlbum]);
+
   /** Data processing */
   const carouselItems = useMemo(
     () =>
@@ -41,7 +49,6 @@ function App() {
           if (!pictures.length) return null;
 
           const choosenId = 0;
-          // const choosenId = Math.floor(Math.random() * pictures.length);
 
           return pictures[choosenId];
         })
@@ -49,6 +56,7 @@ function App() {
     [data]
   );
   const pictureList = data.filter((p) => p.albumId === activeAlbum);
+  const isScrollingDown = !!scrollDirection && scrollDirection === "down";
 
   /** Handlers */
   const handleOnActiveAlbumChange = (index: number) => {
@@ -57,8 +65,13 @@ function App() {
 
   return (
     <Container css={styles.root}>
-      <div css={styles.headerContainer}>
-        <Header />
+      <div
+        css={[
+          styles.headerContainer,
+          isScrollingDown && styles.headerContainerShorter,
+        ]}
+      >
+        <Header hide={isScrollingDown} />
         <Carousel
           items={carouselItems}
           activeItem={activeAlbum}
@@ -91,13 +104,21 @@ export default App;
 const masonryContainerPaddingX = 16;
 const masonryGutter = 10;
 const styles = {
-  root: css({ backgroundColor: "#F0F0F0", minHeight: "100vh" }),
+  root: css({
+    backgroundColor: "#F0F0F0",
+    minHeight: "100vh",
+    paddingTop: 280,
+  }),
   headerContainer: css({
     paddingTop: 32,
     backgroundColor: "#FFFFFF",
     height: 180,
     marginBottom: 60,
+    position: "fixed",
+    top: 0,
+    width: 360,
   }),
+  headerContainerShorter: css({ height: 100 }),
   masonryContainer: css({
     width: "100%",
     paddingLeft: masonryContainerPaddingX,
